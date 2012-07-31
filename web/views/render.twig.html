@@ -69,6 +69,9 @@
 
                 $('#number').attr('src', image_original_url);
                 $('#photo').attr('src', image_original_url);
+                
+                var image_filtered_dummy = new Image();
+                image_filtered_dummy.src = image_filtered_url;                
             
                 $('#iphone').css('left', '0px');
 
@@ -82,38 +85,42 @@
                         
                         $('#instagram').attr('src', '/images/instagram2.png');
 
-                        var image_filtered = new Image();
-                        $(image_filtered).bind('load', function() {
-                    
-                            $('#photo').attr('src', image_filtered_url);
+                        setTimeout(function() {
 
-                            setTimeout(function() {
-                            
-                                $('#instagram').hide();
+                            var image_filtered = new Image();
+                            $(image_filtered).bind('load', function() {
+
+                                $('#photo').attr('src', image_filtered_url);
 
                                 setTimeout(function() {
 
-                                    $('#iphone').animate({
-                                        top: '+=1650',
-                                    }, 1000, function() {
-                                        $('#number').attr('src', '/filter/get/{{ hipinteger }}');
-                                        $('#iphone').hide();
-                                        $('#start_over').fadeIn();
-                                    });
+                                    $('#instagram').hide();
 
-                                }, 1000);
+                                    setTimeout(function() {
 
-                            }, 2000);
-                    
-                        });
-                        image_filtered.src = image_filtered_url;
+                                        $('#iphone').animate({
+                                            top: '+=1650',
+                                        }, 1000, function() {
+                                            $('#number').attr('src', '/filter/get/{{ hipinteger }}');
+                                            $('#iphone').hide();
+                                            $('#start_over').fadeIn();
+                                        });
+
+                                    }, 1000);
+
+                                }, 2000);
+
+                            });
+                            image_filtered.src = image_filtered_url;
+                            
+                        }, 500);
 
                     }, 1000);
 
                 });
 
             });
-            image_original.src = image_original_url;
+            image_original.src = image_original_url;            
         
         });
 

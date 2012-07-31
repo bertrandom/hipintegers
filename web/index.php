@@ -3,7 +3,7 @@
     require_once __DIR__.'/../vendor/autoload.php';
     require_once __DIR__.'/../instagraph/instagraph.php';
 
-    function createImage($hipinteger, $filename = null) {
+    function createImage($hipinteger, $instagrammed = false) {
         
         $font = __DIR__.'/../fonts/Neue Haas Grotesk Display W02 Medium.ttf';
         
@@ -11,7 +11,12 @@
             $font = __DIR__.'/../fonts/Arial.ttf';
         }
         
-        $im = imagecreatefrompng('images/wood612.png');
+        if ($instagrammed) {
+            $im = imagecreatefrompng('images/wood_instagrammed.png');
+        } else {
+            $im = imagecreatefrompng('images/wood612.png');
+        }
+        
         $white = imagecolorallocate($im, 255, 255, 255);
         $black = imagecolorallocate($im, 0, 0, 0);
         $bbox = imagettfbbox(72, 0, $font, $hipinteger);
@@ -77,27 +82,8 @@
 
     $app->get('/filter/get/{hipinteger}', function ($hipinteger) use ($app) {
 
-        $original_filename = '/tmp/' . $hipinteger . '_original.png';
-        $filter_filename = '/tmp/' . $hipinteger . '_filter.png';
-        
-        createImage($hipinteger, $original_filename);
-                
-        try {
+        createImage($hipinteger, true);
 
-            $filter = 'nashville';
-            $instagraph = Instagraph::factory($original_filename, $filter_filename);
-            $instagraph->$filter();        
-
-        } catch (Exception $e) {
-
-        }
-
-        $im = imagecreatefrompng($filter_filename);
-        header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + 3600));
-        header('Content-Type: image/png');
-        imagepng($im);
-        imagedestroy($im);
-        
     })
     ->assert('hipinteger', '\d+');
 

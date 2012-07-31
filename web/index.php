@@ -1,6 +1,37 @@
 <?php
 
     require_once __DIR__.'/../vendor/autoload.php';
+    require_once __DIR__.'/../instagraph/instagraph.php';
+
+    function createImage($hipinteger, $filename = null) {
+        
+        $font = __DIR__.'/../fonts/Neue Haas Grotesk Display W02 Medium.ttf';
+        
+        if (!file_exists($font)) {
+            $font = __DIR__.'/../fonts/Arial.ttf';
+        }
+        
+        $im = imagecreatefrompng('images/wood612.png');
+        $white = imagecolorallocate($im, 255, 255, 255);
+        $black = imagecolorallocate($im, 0, 0, 0);
+        $bbox = imagettfbbox(72, 0, $font, $hipinteger);
+        imagettftext($im, 72, 0, floor((611 - $bbox[4] - $bbox[0]) / 2), floor((611 - $bbox[5] - $bbox[1]) / 2), $black, $font, $hipinteger);
+
+        if ($filename == null) {
+
+            header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + 3600));
+            header('Content-Type: image/png');
+            imagepng($im);
+            
+        } else {
+            
+            imagepng($im, $filename, 1);
+            
+        }
+
+        imagedestroy($im);        
+        
+    }
 
     $app = new Silex\Application();
 
@@ -10,74 +41,92 @@
         'twig.path' => __DIR__.'/views',
     ));
 
+    $app->get('/integer/brooklyn/get/', function () use ($app) {
+        
+        $browser = new Buzz\Browser();
+        $response = $browser->submit('http://api.brooklynintegers.com/rest/', array('method' => 'brooklyn.integers.create'));
+        $body = $response->getContent();
+        $data = json_decode($body);
+
+        return $data->integer;
+        
+    });
+
     $app->get('/integer/mission/get/', function () use ($app) {
         
         $browser = new Buzz\Browser();
         $response = $browser->submit('http://www.missionintegers.com/next-int', array('format' => 'json'));
         $body = $response->getContent();
         $data = json_decode($body);
-        
-        echo $data->number;
-        
-        return 'fuck';
+
+        return $data->number;
         
     });
 
-    $app->get('/create', function () use ($app) {
+    $app->get('/create/{brooklyn_integer}/{mission_integer}', function ($brooklyn_integer, $mission_integer) use ($app) {
         
-        $browser = new Buzz\Browser();
-        $response = $browser->submit('http://www.missionintegers.com/next-int', array('format' => 'json'));
-        $body = $response->getContent();
-        $data = json_decode($body);
-
-        $mission_integer = $data->number;
-
-        $browser = new Buzz\Browser();
-        $response = $browser->submit('http://api.brooklynintegers.com/rest/', array('method' => 'brooklyn.integers.create'));
-        $body = $response->getContent();
-        $data = json_decode($body);
-
-        $brooklyn_integer = $data->integer;
-
-        $hipster_integer = $mission_integer + $brooklyn_integer;
-
-        // print ("<pre>");
-        // echo $hipster_integer;
-        // print ("</pre>");
+        return $app['twig']->render('combine.twig.html', array(
+            'brooklyn_integer' => $brooklyn_integer,
+            'mission_integer' => $mission_integer,
+            'hipinteger' => $mission_integer + $brooklyn_integer,
+        ));
         
+    })
+    ->assert('brooklyn_integer', '\d+')
+    ->assert('mission_integer', '\d+');
+
+    $app->get('/filter/get/{hipinteger}', function ($hipinteger) use ($app) {
+
+        $original_filename = '/tmp/' . $hipinteger . '_original.png';
+        $filter_filename = '/tmp/' . $hipinteger . '_filter.png';
+        
+        createImage($hipinteger, $original_filename);
+                
+        try {
+
+            $filter = 'nashville';
+            $instagraph = Instagraph::factory($original_filename, $filter_filename);
+            $instagraph->$filter();        
+
+        } catch (Exception $e) {
+
+        }
+
+        $im = imagecreatefrompng($filter_filename);
+        header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + 3600));
         header('Content-Type: image/png');
-
-        // Create the image
-        $im = imagecreatetruecolor(612, 612);
-
-        // Create some colors
-        $white = imagecolorallocate($im, 255, 255, 255);
-        $black = imagecolorallocate($im, 0, 0, 0);
-        imagefilledrectangle($im, 0, 0, 611, 611, $white);
-
-        // The text to draw
-        $text = 'Testing...';
-        // Replace path by your own font path
-        $font = '/../fonts/Neue Haas Grotesk Display W02 Medium.ttf';
-
-        // Add the text
-        $bbox = imagettfbbox(72, 0, $font, $hipster_integer);
-        imagettftext($im, 72, 0, floor((611 - $bbox[4] - $bbox[0]) / 2), floor((611 - $bbox[5] - $bbox[1]) / 2), $black, $font, $hipster_integer);
-
-        // Using imagepng() results in clearer text compared with imagejpeg()
         imagepng($im);
-        imagedestroy($im);        
+        imagedestroy($im);
         
-        
-    });
+    })
+    ->assert('hipinteger', '\d+');
+
+    $app->get('/image/get/{hipinteger}', function ($hipinteger) use ($app) {
+
+        createImage($hipinteger);
+
+    })
+    ->assert('hipinteger', '\d+');
 
     $app->get('/', function () use ($app) {
         
-        return $app['twig']->render('index.twig.html', array(
-            'name' => $name,
+        return $app['twig']->render('index.twig.html');
+    
+    });
+    
+    $app->get('/render/{hipinteger}', function ($hipinteger) use ($app) {
+        
+        return $app['twig']->render('render.twig.html', array(
+            'hipinteger' => $hipinteger
         ));
         
-    });
+    });    
+
+    $app->get('/dispatch', function () use ($app) {
+    
+        return $app['twig']->render('dispatch.twig.html');
+    
+    });    
     
     $app->run();
     

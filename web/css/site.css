@@ -1,0 +1,14 @@
+body {
+    background: url('/images/bg_tile_crazy.png');
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+.hero-unit {
+    background-color: #FFFFFF;
+    border: 1px solid black;
+}
+
+#start_over {
+    padding-top: 20px;
+}

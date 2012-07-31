@@ -1,0 +1,62 @@
+{% extends "base.twig.html" %}
+
+{% block content %}
+
+    <div class="container">
+  
+        <div class="hero-unit">
+            <h2>Dispatching bike courier to Brooklyn Integers...</h2>
+            <h2 id="received_brooklyn" style="display: none">...received <span id="brooklyn_integer"></span>.</h2>
+            <h2 id="dispatch_mission" style="display: none; padding-top: 30px;">Dispatching bike courier to Mission Integers...</h2>
+            <h2 id="received_mission" style="display: none">...received <span id="mission_integer"></span>.</h2>
+        </div>
+  
+    </div> <!-- /container -->
+
+{% endblock %}
+
+{% block javascript %}
+
+    <script>
+
+        $(document).ready(function(){
+
+            var brooklyn_integer;
+            var mission_integer;
+
+            $.get('/integer/brooklyn/get/', null, function(data) {
+            
+                brooklyn_integer = data;
+            
+                $('#brooklyn_integer').html(data);
+                $('#received_brooklyn').show();
+
+                setTimeout(function() {
+
+                    $('#dispatch_mission').show();
+
+                    $.get('/integer/mission/get/', null, function(data) {
+
+                        mission_integer = data;
+
+                        $('#mission_integer').html(data);
+                        $('#received_mission').show();
+
+                        setTimeout(function() {
+
+                            location.href = '/create/' + brooklyn_integer + '/' + mission_integer;
+
+                        }, 1000);
+
+
+                    });
+                
+                }, 1000);
+
+            });
+
+        });
+
+    </script>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.twig.html" %}
+
+{% block content %}
+
+    <div class="container">
+  
+        <div class="hero-unit">
+            <h1><span id="brooklyn_integer" style="display:none">{{ brooklyn_integer }}</span> <span id="plus" style="display:none">+</span> <span id="mission_integer" style="display:none">{{ mission_integer }}</span> <span id="equals" style="display:none">=</span> <span id="hipinteger" style="display:none">{{ hipinteger }}</span></h1>
+        </div>
+  
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+
+    <script>
+
+        $(document).ready(function(){
+            $('#brooklyn_integer').fadeIn(1000, function() {
+                $('#plus').fadeIn(1000, function() {
+                    $('#mission_integer').fadeIn(1000, function() {
+                        $('#equals').fadeIn(1000, function() {
+                            $('#hipinteger').fadeIn(1000, function() {
+                                setTimeout(function() {
+                                    location.href = '/render/{{ hipinteger }}'
+                                }, 1000);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+    </script>
+
+{% endblock %}

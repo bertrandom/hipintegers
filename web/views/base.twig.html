@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}hipintegers{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="We create unique integer experiences.">
+        <meta name="author" content="Bertrand Fan">
+
+        {% block stylesheets %}
+
+            <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+            <link href="/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+            <link href="/css/site.css" rel="stylesheet">
+
+        {% endblock %}
+
+        {% block javascript_head %}
+
+            <!--[if lt IE 9]>
+              <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+            <![endif]-->
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+        {% endblock %}
+
+    </head>
+    <body>
+
+        {% block content %}
+        
+            <div class="container">
+  
+                <div class="hero-unit">
+                    <h1>hipintegers</h1>
+                    <br />
+                    <p>We proudly source integers from artisanal integer foundries <a href="http://brooklynintegers.com/">Brooklyn Integers</a> and <a href="http://www.missionintegers.com/">Mission Integers</a> via bike courier and combine them to create a unique integer experience by rendering in <a href="http://www.fontbureau.com/NHG/">Neue Haas Grotesk</a> on top of sustainable wood. Then we take an Instagram photo of it and apply a filter for a retro film-camera look.</p>
+                    <p><a class="btn btn-primary btn-large" href="/dispatch">create</a></p>
+                  </div>
+  
+            </div> <!-- /container -->
+            
+        {% endblock %}
+    
+        {% block javascript %}
+        {% endblock %}
+
+    </body>
+</html>

@@ -103,7 +103,11 @@
                                         }, 1000, function() {
                                             $('#number').attr('src', '/filter/get/{{ hipinteger }}');
                                             $('#iphone').hide();
-                                            $('#start_over').fadeIn();
+                                            
+                                            setTimeout(function() {
+                                                $('#start_over').fadeIn();
+                                            }, 2000);
+                                            
                                         });
 
                                     }, 1000);

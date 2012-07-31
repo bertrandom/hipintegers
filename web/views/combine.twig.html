@@ -1,5 +1,19 @@
 {% extends "base.twig.html" %}
 
+{% block stylesheets %}
+
+    {{ parent() }}
+    <style>
+    
+        .hero-unit {
+            text-align: center;
+        }
+    
+    </style>
+
+{% endblock %}
+
+
 {% block content %}
 
     <div class="container">

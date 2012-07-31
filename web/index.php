@@ -1,7 +1,6 @@
 <?php
 
     require_once __DIR__.'/../vendor/autoload.php';
-    require_once __DIR__.'/../instagraph/instagraph.php';
 
     function createImage($hipinteger, $instagrammed = false) {
         
